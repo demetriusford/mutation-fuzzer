@@ -5,8 +5,7 @@
 #define OS_SOURCE "/dev/urandom"
 #define MAX_BYTES 104857600
 
-#define MIN_MUTATIONS 1
-#define MAX_MUTATIONS 50
+const unsigned int MUTATIONS[2] = {1, 50};
 
 void error(const char* message, unsigned char code);
 unsigned int get_seed();
@@ -125,7 +124,7 @@ long int file_size(FILE* file) {
 void mutate(uint8_t* buffer, size_t size) {
   FILE* candidate = temp_file();
   unsigned int mutations =
-      (rand() % (MAX_MUTATIONS - MIN_MUTATIONS + 1)) + MIN_MUTATIONS;
+      (rand() % (MUTATIONS[1] - MUTATIONS[0] + 1)) + MUTATIONS[0];
 
   for (size_t _ = 0; _ < mutations; _ += 1) {
     buffer[rand() % size] = rand() % 256;
