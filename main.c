@@ -40,21 +40,13 @@ int main(int argc, char* argv[]) {
     error("target > 100 MB.", 1);
   }
 
-  buffer = (uint8_t*)malloc(bytes * sizeof(uint8_t));
+  buffer = (uint8_t*) malloc(bytes * sizeof(uint8_t));
 
   if (buffer == NULL) {
     error("memory was not allocated to buffer.", 1);
   }
 
   size = fread(buffer, 1, bytes, file);
-
-  if (bytes != size) {
-    error("read in a size not equal to target.", 1);
-  }
-
-  if (ferror(file) != 0) {
-    error("could not receive data from target.", 1);
-  }
 
   mutate(buffer, size);
 
@@ -71,19 +63,13 @@ void error(const char* message, unsigned char code) {
 
 unsigned int get_seed() {
   FILE* file = fopen(OS_SOURCE, "r");
-  size_t size = 0;
   unsigned int seed = 0;
 
   if (file == NULL) {
     error("random device not found.", 1);
   }
 
-  size = fread(&seed, sizeof(seed), 1, file);
-
-  if (size != 1) {
-    error("size not equal to 1 byte", 1);
-  }
-
+  fread(&seed, sizeof(seed), 1, file);
   fclose(file);
 
   return seed;
@@ -106,23 +92,18 @@ FILE* temp_file() {
 }
 
 long int file_size(FILE* file) {
-  long int size = 0;
+  long int bytes = 0;
 
-  if (fseek(file, 0, SEEK_END)) {
-    error("file re-positioning failed @ end.", 1);
-  }
+  fseek(file, 0, SEEK_END);
+  bytes = ftell(file);
+  fseek(file, 0, SEEK_SET);
 
-  size = ftell(file);
-
-  if (fseek(file, 0, SEEK_SET)) {
-    error("file re-positioning failed @ set.", 1);
-  }
-
-  return size;
+  return bytes;
 }
 
 void mutate(uint8_t* buffer, size_t size) {
   FILE* candidate = temp_file();
+  size_t count = 0;
   unsigned int mutations =
       (rand() % (MUTATIONS[1] - MUTATIONS[0] + 1)) + MUTATIONS[0];
 
