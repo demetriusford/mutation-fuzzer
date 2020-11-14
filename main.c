@@ -15,22 +15,17 @@ void mutate(uint8_t* buffer, size_t size);
 
 int main(int argc, char* argv[]) {
   if (argc != 2) {
-    error("missing file argument.", 2);
+    error("file argument is required.", 2);
   }
 
   FILE* file = fopen(argv[1], "rb");
-  long int bytes = 0;
-
-  uint8_t* buffer = NULL;
-  size_t size = 0;
-
   srand(get_seed());
 
   if (file == NULL) {
     error("target does not exist.", 1);
   }
 
-  bytes = file_size(file);
+  long int bytes = file_size(file);
 
   if (bytes == 0) {
     error("target is empty.", 1);
@@ -40,13 +35,13 @@ int main(int argc, char* argv[]) {
     error("target > 100 MB.", 1);
   }
 
-  buffer = (uint8_t*) malloc(bytes * sizeof(uint8_t));
+  uint8_t* buffer = (uint8_t*) malloc(bytes * sizeof(uint8_t));
 
   if (buffer == NULL) {
     error("memory was not allocated to buffer.", 1);
   }
 
-  size = fread(buffer, 1, bytes, file);
+  size_t size = fread(buffer, 1, bytes, file);
 
   mutate(buffer, size);
 
@@ -103,7 +98,6 @@ long int file_size(FILE* file) {
 
 void mutate(uint8_t* buffer, size_t size) {
   FILE* candidate = temp_file();
-  size_t count = 0;
   unsigned int mutations =
       (rand() % (MUTATIONS[1] - MUTATIONS[0] + 1)) + MUTATIONS[0];
 
