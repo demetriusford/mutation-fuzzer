@@ -16,7 +16,7 @@ Segmentation fault (core dumped)
 
 Using [@jfoote](https://github.com/jfoote/)'s exploitable GDB plugin to gauge likelihood:
 
-```
+```gdb
 $ gdb --args ./jpg2bmp /tmp/tmpB3WZIc cross.bmp
 (gdb) r
 Starting program: /home/demetrius-ford/pentest/mutation-fuzzer/jpg2bmp /tmp/tmpB3WZIc cross.bmp
