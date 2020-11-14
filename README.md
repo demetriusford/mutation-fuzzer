@@ -8,8 +8,8 @@ Post Reconnaissance:
 
 ```bash
 $ gcc -o mutate main.c
-$ ./mutate xxx.jpg
-$ ./jpg2bmp /tmp/tmpB3WZIc xxx.bmp
+$ ./mutate cross.jpg
+$ ./jpg2bmp /tmp/tmpB3WZIc cross.bmp
 Bug #4 triggered.
 Segmentation fault (core dumped)
 ```
