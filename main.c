@@ -1,3 +1,8 @@
+/** 
+ * @author: Demetrius Ford
+ * @date: 15 November 2020
+ **/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
