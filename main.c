@@ -8,9 +8,8 @@
 #include <stdint.h>
 
 #define OS_SOURCE "/dev/urandom"
-#define MAX_BYTES 104857600
-
-const unsigned int MUTATIONS[2] = {1, 50};
+#define MUTATIONS 0.01
+#define MAX_BYTES 10485760
 
 void error(const char* message, unsigned char code);
 unsigned int get_seed();
@@ -20,7 +19,7 @@ void mutate(uint8_t* buffer, size_t size);
 
 int main(int argc, char* argv[]) {
   if (argc != 2) {
-    error("file argument is required.", 2);
+    error("a file is required.", 2);
   }
 
   FILE* file = fopen(argv[1], "rb");
@@ -33,17 +32,17 @@ int main(int argc, char* argv[]) {
   long int bytes = file_size(file);
 
   if (bytes == 0) {
-    error("target is empty.", 1);
+    error("can't fuzz empty file.", 1);
   }
 
   if (bytes > MAX_BYTES) {
-    error("target > 100 MB.", 1);
+    error("target > 10 megabytes.", 1);
   }
 
   uint8_t* buffer = (uint8_t*) malloc(bytes * sizeof(uint8_t));
 
   if (buffer == NULL) {
-    error("memory was not allocated to buffer.", 1);
+    error("memory not accessible.", 1);
   }
 
   size_t size = fread(buffer, 1, bytes, file);
@@ -103,10 +102,9 @@ long int file_size(FILE* file) {
 
 void mutate(uint8_t* buffer, size_t size) {
   FILE* candidate = temp_file();
-  unsigned int mutations =
-      (rand() % (MUTATIONS[1] - MUTATIONS[0] + 1)) + MUTATIONS[0];
+  unsigned int count = (unsigned int) (MUTATIONS * size);
 
-  for (size_t _ = 0; _ < mutations; _ += 1) {
+  for (size_t _ = 0; _ < count; _ += 1) {
     buffer[rand() % size] = rand() % 256;
   }
 
