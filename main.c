@@ -60,8 +60,6 @@
  * - Data corruption from incomplete writes or race conditions
  * - Privilege escalation through device file access
  *
- * @section LICENSE
- *
  * For authorized security testing and research purposes only.
  */
 
