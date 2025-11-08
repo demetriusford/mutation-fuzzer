@@ -47,7 +47,7 @@
  *
  * Security Warning:
  *     This code is for EDUCATIONAL AND RESEARCH PURPOSES ONLY.
- *     DO NOT use in production environments.
+ *     Do NOT use in production environments.
  *     Contains deliberate security vulnerabilities.
  */
 
