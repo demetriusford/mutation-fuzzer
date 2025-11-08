@@ -183,6 +183,7 @@ int main(int argc, char* argv[]) {
      * unauthorized file access and maintaining least-privilege principles.
      */
     int fd = open(argv[1], O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+    
     if (fd == -1) {
         error(1, "target does not exist or is a symlink.");
     }
@@ -192,6 +193,7 @@ int main(int argc, char* argv[]) {
      * Both conditions prevent meaningful fuzzing operations.
      */
     long int bytes = file_size(fd);
+    
     if (bytes <= 0) {
         close(fd);
         if (bytes == 0) {
