@@ -1,54 +1,86 @@
-/*
- * jpg2bmp.c - JPEG to BMP Format Converter (Fuzzing Test Harness)
+/**
+ * @author  Demetrius Ford
+ * @date    15 November 2020
+ * @updated 05 November 2025
+ * @brief   JPEG to BMP converter with intentional vulnerabilities for fuzzing research
  *
- * This file is part of a fuzzing exercise suite designed for educational
- * purposes in software testing and vulnerability research.
+ * @section DESCRIPTION
  *
- * Overview:
- *     This program implements a simplified JPEG decoder that converts JPEG
- *     images to 24-bit uncompressed BMP format. It parses JPEG file structure
- *     including markers (SOI, SOF, DQT, DHT, SOS, EOI), quantization tables,
- *     Huffman coding tables, and compressed image data.
+ * This program implements a simplified JPEG decoder that converts JPEG images
+ * to 24-bit uncompressed BMP format. It parses JPEG file structure including
+ * markers (SOI, SOF, DQT, DHT, SOS, EOI), quantization tables, Huffman coding
+ * tables, and compressed image data.
  *
- * Fuzzing Target:
- *     This implementation contains intentionally introduced vulnerabilities
- *     designed to be discovered through automated fuzzing techniques. The
- *     program serves as a realistic test harness for learning fuzzing tools
- *     such as AFL, libFuzzer, or Honggfuzz.
+ * This implementation serves as a realistic fuzzing test harness for security
+ * research and educational purposes. It is designed to be used with automated
+ * fuzzing tools such as AFL, libFuzzer, or Honggfuzz to discover vulnerabilities
+ * in image parsing implementations.
  *
- * Known Vulnerabilities:
- *     Bug #1: Crash on 16-bit precision quantization tables (DQT marker)
- *     Bug #2: Crash on non-YCbCr color space images (grayscale handling)
- *     Bug #3: Crash on invalid Huffman table ID references (>= 4)
- *     Bug #4: Crash when more than 2 AC Huffman tables are defined
- *     Bug #5: Crash when more than 2 DC Huffman tables are defined
- *     Bug #6-8: Additional vulnerabilities in Huffman decoding pipeline
+ * @section FUZZING_TARGETS
  *
- * Supported Features:
- *     - Baseline JPEG (SOF0) and Progressive JPEG (SOF2) markers
- *     - YCbCr color space with 4:4:4, 4:2:2, and 4:2:0 sampling
- *     - Huffman entropy coding (DC and AC coefficients)
- *     - Quantization table parsing and application
- *     - BMP file generation with proper padding and header structure
+ * This implementation contains intentionally introduced vulnerabilities designed
+ * to be discovered through automated fuzzing techniques:
  *
- * Limitations:
- *     - No support for 16-bit quantization tables
- *     - Grayscale images not supported (YCbCr only)
- *     - Maximum 4 quantization tables
- *     - Maximum 2 DC and 2 AC Huffman tables
- *     - Simplified MCU decoding (placeholder implementation)
+ * 1. Bug #1: 16-bit Precision Quantization Tables (DQT Marker)
+ *    - Crashes when encountering DQT markers with precision != 0
+ *    - Triggers on JPEG files with 16-bit quantization table support
  *
- * Usage:
+ * 2. Bug #2: Non-YCbCr Color Space (Grayscale Handling)
+ *    - Crashes on grayscale images (num_components != 3)
+ *    - Only supports YCbCr color space processing
+ *
+ * 3. Bug #3: Invalid Huffman Table ID References
+ *    - Crashes when AC or DC table ID >= 4
+ *    - Insufficient bounds checking in SOS marker parsing
+ *
+ * 4. Bug #4: AC Huffman Table Overflow
+ *    - Crashes when more than 2 AC Huffman tables are defined
+ *    - Fixed-size array limits exceeded in DHT processing
+ *
+ * 5. Bug #5: DC Huffman Table Overflow
+ *    - Crashes when more than 2 DC Huffman tables are defined
+ *    - Fixed-size array limits exceeded in DHT processing
+ *
+ * 6. Bugs #6-8: Additional Huffman Decoding Vulnerabilities
+ *    - Additional undisclosed vulnerabilities in decoding pipeline
+ *    - Designed for advanced fuzzing campaign discovery
+ *
+ * @section SUPPORTED_FEATURES
+ *
+ * JPEG Format Support:
+ * - Baseline JPEG (SOF0) and Progressive JPEG (SOF2) markers
+ * - YCbCr color space with 4:4:4, 4:2:2, and 4:2:0 sampling
+ * - Huffman entropy coding (DC and AC coefficients)
+ * - Quantization table parsing and application
+ * - BMP file generation with proper padding and header structure
+ *
+ * Implementation Limitations:
+ * - No support for 16-bit quantization tables
+ * - Grayscale images not supported (YCbCr only)
+ * - Maximum 4 quantization tables
+ * - Maximum 2 DC and 2 AC Huffman tables
+ * - Simplified MCU decoding (placeholder implementation)
+ *
+ * @section USAGE
+ *
+ * Command Line:
  *     jpg2bmp <input.jpg> <output.bmp>
  *
  * Compilation:
  *     cc -o jpg2bmp jpg2bmp.c -lm
- *     cc -o jpg2bmp jpg2bmp.c -lm -DDEBUG # Enable debug output
+ *     cc -o jpg2bmp jpg2bmp.c -lm -DDEBUG    # Enable debug output
  *
- * Security Warning:
- *     This code is for EDUCATIONAL AND RESEARCH PURPOSES ONLY.
- *     Do NOT use in production environments.
- *     Contains deliberate security vulnerabilities.
+ * @section SECURITY_WARNING
+ *
+ * This code is for EDUCATIONAL AND RESEARCH PURPOSES ONLY.
+ *
+ * - DO NOT use in production environments
+ * - Contains deliberate security vulnerabilities
+ * - Designed for authorized security testing and fuzzing research
+ * - For use in controlled testing environments only
+ *
+ * For authorized security testing, penetration testing, and educational
+ * vulnerability research purposes only.
  */
 
 #include <stdio.h>
