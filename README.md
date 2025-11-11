@@ -24,7 +24,7 @@ Using [@jfoote](https://github.com/jfoote/)'s exploitable GDB plugin to gauge li
 ```gdb
 $ gdb --args ./jpg2bmp /tmp/tmpB3WZIc cross.bmp
 (gdb) r
-Starting program: /home/demetrius-ford/pentest/mutation-fuzzer/jpg2bmp /tmp/tmpB3WZIc cross.bmp
+Starting program: /home/demetriusford/pentest/mutation-fuzzer/jpg2bmp /tmp/fuzz_h1P2IO cross.bmp
 Bug #4 triggered.
 
 Program received signal SIGSEGV, Segmentation fault.
