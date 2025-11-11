@@ -7,9 +7,14 @@ Written in C and based on Charlie Miller's ([@0xcharlie](https://twitter.com/0xc
 Post Reconnaissance:
 
 ```bash
-$ gcc -o mutate main.c
-$ ./mutate cross.jpg
-$ ./jpg2bmp /tmp/tmpB3WZIc cross.bmp
+$ make
+==> Checking for required commands...
+==> Building jpg2bmp...
+==> Building fuzzer...
+==> Build complete!
+$ ./fuzzer cross.jpg
+Mutated file created: /tmp/fuzz_h1P2IO
+$ ./jpg2bmp /tmp/fuzz_h1P2IO cross.bmp
 Bug #4 triggered.
 Segmentation fault (core dumped)
 ```
