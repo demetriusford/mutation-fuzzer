@@ -114,7 +114,7 @@
 #define MAX_QUANT_TABLES 4
 #define BLOCK_SIZE 64
 
-static const int zigzag[64] = {
+static const int zigzag[64] __attribute__((unused)) = {
    0,  1,  5,  6, 14, 15, 27, 28,
    2,  4,  7, 13, 16, 26, 29, 42,
    3,  8, 12, 17, 25, 30, 41, 43,
@@ -180,7 +180,7 @@ typedef struct {
   int num_bits;
 } Block;
 
-int get_file_size(FILE *fp);
+size_t get_file_size(FILE *fp);
 int convert_jpg_file(const char *jpg_filename, const char *bmp_filename);
 int decode_jpg_file(const char *filename, JpegData *jpeg);
 int jpeg_decode(JpegData *jpeg);
@@ -202,12 +202,12 @@ int write_bmp24(const char *filename, int width, int height, uint8_t *data);
 #define dprintf(fmt, ...) ((void)0)
 #endif
 
-int get_file_size(FILE *fp) {
+size_t get_file_size(FILE *fp) {
   long size;
   fseek(fp, 0, SEEK_END);
   size = ftell(fp);
   fseek(fp, 0, SEEK_SET);
-  return (int)size;
+  return (size_t)size;
 }
 
 int clamp(int value) {
@@ -239,6 +239,7 @@ void build_quantization_table(float *table, const uint8_t *data) {
 }
 
 int parse_dri(JpegData *jpeg, const uint8_t *data, int length) {
+  (void)length; // Unused parameter
   jpeg->restart_interval = (data[0] << 8) | data[1];
   dprintf("DRI - Restart_marker\n");
   return 0;
@@ -326,6 +327,7 @@ int parse_dht(JpegData *jpeg, const uint8_t *data, int length) {
 }
 
 int parse_sof(JpegData *jpeg, const uint8_t *data, int length) {
+  (void)length; // Unused parameter
   jpeg->precision = data[0];
   jpeg->height = (data[1] << 8) | data[2];
   jpeg->width = (data[3] << 8) | data[4];
@@ -364,8 +366,9 @@ int parse_sof(JpegData *jpeg, const uint8_t *data, int length) {
 }
 
 int parse_sos(JpegData *jpeg, const uint8_t *data, int length) {
+  (void)length; // Unused parameter
   int num_components = data[0];
-  
+
   dprintf("> SOS marker\n");
 
   // CRASH TRIGGER: Bug #2 - Non-YCbCr color space (grayscale)
@@ -496,8 +499,8 @@ int decode_jpg_file(const char *filename, JpegData *jpeg) {
     return -1;
   }
 
-  int size = get_file_size(fp);
-  dprintf("-|- File thinks its size is: %d bytes\n", size);
+  size_t size = get_file_size(fp);
+  dprintf("-|- File thinks its size is: %zu bytes\n", size);
 
   jpeg->data = (uint8_t *)malloc(size);
   if (!jpeg->data) {
