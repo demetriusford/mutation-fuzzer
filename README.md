@@ -13,10 +13,23 @@ $ make
 ==> Building fuzzer...
 ==> Build complete!
 $ ./fuzzer cross.jpg
+Info: seed: 2831647091
 Mutated file created: /tmp/fuzz_h1P2IO
 $ ./jpg2bmp /tmp/fuzz_h1P2IO cross.bmp
 Bug #4 triggered.
 Segmentation fault (core dumped)
+```
+
+Each run prints the seed it used and writes a `<output>.mutations` log next to the mutated file, listing every changed offset with its original and replacement byte. To reproduce a mutant that triggered a crash, pass its seed back as the second argument. The temp file name differs each run, but the byte mutations are identical:
+
+```bash
+$ ./fuzzer cross.jpg 2831647091
+Info: seed: 2831647091
+Mutated file created: /tmp/fuzz_a9Kd2L
+$ head -3 /tmp/fuzz_a9Kd2L.mutations
+# seed=2831647091 size=48123 count=481
+offset,original,replacement
+17034,0x2C,0xBB
 ```
 
 Using [@jfoote](https://github.com/jfoote/)'s exploitable GDB plugin to gauge likelihood:
